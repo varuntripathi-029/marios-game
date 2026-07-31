@@ -6,7 +6,6 @@
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {
-      "comment": "Only content-hashed build output may be cached forever. Anything with a stable filename must not be, or replacing the file behind it is invisible for a year.",
       "source": "/assets/(.*)",
       "headers": [
         {

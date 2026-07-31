@@ -62,6 +62,13 @@ already loaded the page — their browser never even asks the server again. Keep
 `src/assets/` and imported, and this cannot happen. Only `favicon.svg` lives in
 `public/`, on a one-day cache, because `index.html` refers to it by literal path.
 
+This is why the `immutable` rule in `vercel.json` is scoped to `/assets/` and nothing
+else — that path only ever holds content-hashed output.
+
+Note that `vercel.json` is validated against a strict schema on deploy: a header entry
+accepts only `source`, `headers`, `has` and `missing`. Anything else, including a
+`comment` key, fails the build. JSON has no comments, so notes go here instead.
+
 To replace a photo: resize it the same way, overwrite both formats in `src/assets/`, and
 update the `width`/`height` in `src/data/album.ts` if the aspect ratio changed.
 

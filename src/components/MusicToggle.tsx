@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { Music, Pause } from "lucide-react"
 
-/** Drop your track in `public/` under this name and it appears on its own. */
-const MUSIC_SRC = "/song.mp3"
+import song from "@/assets/song.mp3"
+
+/** Replace `src/assets/song.mp3` to change the track. */
+const MUSIC_SRC = song
 
 export function MusicToggle() {
   const audioRef = useRef<HTMLAudioElement>(null)

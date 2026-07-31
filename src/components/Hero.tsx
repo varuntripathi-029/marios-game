@@ -1,5 +1,7 @@
 import { ChevronDown } from "lucide-react"
 
+import landingVideo from "@/assets/landingvid.mp4"
+
 const serif = { fontFamily: "'Instrument Serif', serif" }
 
 export function Hero() {
@@ -11,7 +13,7 @@ export function Hero() {
     >
       <video
         className="hero-video z-0"
-        src="/landingvid.mp4"
+        src={landingVideo}
         autoPlay
         loop
         muted
@@ -33,7 +35,7 @@ export function Hero() {
         <p className="animate-fade-rise-delay mt-8 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
           Sorry that I am not there with you right now. But before I go to sleep every
           night, I always dream of putting you to sleep with a goodnight kiss, filled
-          with all my love.
+          with all my love. 😚
         </p>
       </section>
 

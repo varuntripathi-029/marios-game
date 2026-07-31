@@ -1,3 +1,24 @@
+/*
+ * Media is imported rather than referenced from `public/` so Vite stamps a content
+ * hash into every filename. Swap a photo and its URL changes, which is what lets the
+ * long immutable cache header in vercel.json be safe — a stable filename behind that
+ * header would keep serving the old picture for a year.
+ */
+import img1Jpg from "@/assets/img1.jpg"
+import img1Webp from "@/assets/img1.webp"
+import img2Jpg from "@/assets/img2.jpg"
+import img2Webp from "@/assets/img2.webp"
+import img3Jpg from "@/assets/img3.jpg"
+import img3Webp from "@/assets/img3.webp"
+import img4Jpg from "@/assets/img4.jpg"
+import img4Webp from "@/assets/img4.webp"
+import img5Jpg from "@/assets/img5.jpg"
+import img5Webp from "@/assets/img5.webp"
+import img6Jpg from "@/assets/img6.jpg"
+import img6Webp from "@/assets/img6.webp"
+import finalPoster from "@/assets/finalvid-poster.jpg"
+import finalVideo from "@/assets/finalvid.mp4"
+
 export interface AlbumPhoto {
   id: string
   /** Modern format, served first. */
@@ -14,18 +35,18 @@ export interface AlbumPhoto {
  * photo 1 and 2 are the first spread, 3 and 4 the second, and so on.
  */
 export const photos: AlbumPhoto[] = [
-  { id: "photo-1", webp: "/img1.webp", jpg: "/img1.jpg", width: 900, height: 1600, alt: "A moment together" },
-  { id: "photo-2", webp: "/img2.webp", jpg: "/img2.jpg", width: 1200, height: 1600, alt: "A moment together" },
-  { id: "photo-3", webp: "/img3.webp", jpg: "/img3.jpg", width: 1200, height: 1800, alt: "A moment together" },
-  { id: "photo-4", webp: "/img4.webp", jpg: "/img4.jpg", width: 720, height: 1280, alt: "A moment together" },
-  { id: "photo-5", webp: "/img5.webp", jpg: "/img5.jpg", width: 720, height: 1280, alt: "A moment together" },
-  { id: "photo-6", webp: "/img6.webp", jpg: "/img6.jpg", width: 899, height: 1599, alt: "A moment together" },
+  { id: "photo-1", webp: img1Webp, jpg: img1Jpg, width: 900, height: 1600, alt: "A moment together" },
+  { id: "photo-2", webp: img2Webp, jpg: img2Jpg, width: 1200, height: 1600, alt: "A moment together" },
+  { id: "photo-3", webp: img3Webp, jpg: img3Jpg, width: 1200, height: 1800, alt: "A moment together" },
+  { id: "photo-4", webp: img4Webp, jpg: img4Jpg, width: 720, height: 1280, alt: "A moment together" },
+  { id: "photo-5", webp: img5Webp, jpg: img5Jpg, width: 720, height: 1280, alt: "A moment together" },
+  { id: "photo-6", webp: img6Webp, jpg: img6Jpg, width: 899, height: 1599, alt: "A moment together" },
 ]
 
 /** Plays on the page facing the back cover, once the album runs out of pages. */
 export const finale = {
-  src: "/finalvid.mp4",
-  poster: "/finalvid-poster.jpg",
+  src: finalVideo,
+  poster: finalPoster,
 }
 
 /** Printed on the front cover. */

@@ -45,11 +45,25 @@ the back cover line, and the poem stanzas. The hero headline and subtext are in
 
 ## Music
 
-Drop an audio file at **`public/song.mp3`** and a play/pause button appears at the top
-right. Without that file the button hides itself, so nothing breaks by leaving it out.
-Browsers refuse to play audio until the visitor has interacted with the page, so the
-track starts on her first tap or click anywhere. To use a different filename, change
-`MUSIC_SRC` in `src/components/MusicToggle.tsx`.
+Replace **`src/assets/song.mp3`** to change the track. A play/pause button sits at the
+top right, with an arrow pointing at it until the music starts. Browsers refuse to play
+audio until the visitor has interacted with the page, so the track begins on her first
+tap or click anywhere.
+
+## Caching, and why media lives in `src/assets/`
+
+Every image, video and the audio file is **imported** rather than referenced by a
+literal `/name.ext` path. Vite stamps a content hash into each filename at build time,
+so replacing a photo changes its URL.
+
+That matters because `vercel.json` marks build output `immutable` for a year. A stable
+filename behind that header means swapping the file is invisible to anyone who has
+already loaded the page — their browser never even asks the server again. Keep media in
+`src/assets/` and imported, and this cannot happen. Only `favicon.svg` lives in
+`public/`, on a one-day cache, because `index.html` refers to it by literal path.
+
+To replace a photo: resize it the same way, overwrite both formats in `src/assets/`, and
+update the `width`/`height` in `src/data/album.ts` if the aspect ratio changed.
 
 ## Deploying to Vercel
 

@@ -45,17 +45,16 @@ export function MomentSection({ moment, index }: MomentSectionProps) {
       className="relative h-[100svh] w-full snap-start snap-always overflow-hidden"
       style={{ scrollSnapStop: "always" }}
     >
-      {/* Blurred fill behind the column on wide screens. */}
-      {isImage && (
-        <img
-          src={moment.webp}
-          alt=""
-          aria-hidden
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full scale-125 object-cover opacity-40 blur-3xl"
-        />
-      )}
+      {/* Blurred fill behind the column on wide screens. The video uses its poster
+          frame rather than a second copy of the file. */}
+      <img
+        src={isImage ? moment.webp : moment.poster}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full scale-125 object-cover opacity-40 blur-3xl"
+      />
 
       <div className="absolute inset-0 flex items-center justify-center md:py-8">
         <div className={cn(columnClass, "reveal", inView && "reveal-in")}>
@@ -76,10 +75,11 @@ export function MomentSection({ moment, index }: MomentSectionProps) {
             <video
               ref={videoRef}
               src={moment.src}
+              poster={moment.poster}
               loop
               muted
               playsInline
-              preload="none"
+              preload="metadata"
               className={mediaClass}
             />
           )}

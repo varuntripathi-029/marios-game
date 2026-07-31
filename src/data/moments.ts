@@ -19,6 +19,8 @@ export interface ImageMoment extends Moment {
 export interface VideoMoment extends Moment {
   type: "video"
   src: string
+  /** First frame, shown before the video downloads and used as the blurred fill. */
+  poster: string
 }
 
 export type StoryMoment = ImageMoment | VideoMoment
@@ -92,6 +94,7 @@ export const moments: StoryMoment[] = [
     id: "moment-final",
     type: "video",
     src: "/finalvid.mp4",
+    poster: "/finalvid-poster.jpg",
     message: "Your closing message for the final video goes here.",
   },
 ]

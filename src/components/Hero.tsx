@@ -37,10 +37,11 @@ export function Hero() {
         </p>
       </section>
 
-      <ChevronDown
-        aria-hidden
-        className="animate-fade-rise-delay-2 absolute bottom-10 z-10 h-6 w-6 animate-bounce text-white/60"
-      />
+      {/* Two elements: the wrapper fades in, the icon bounces. One element can only
+          run one `animation` shorthand, so they'd cancel each other out. */}
+      <div className="animate-fade-rise-delay-2 absolute bottom-10 z-10">
+        <ChevronDown aria-hidden className="h-6 w-6 animate-bounce text-white/60" />
+      </div>
     </header>
   )
 }

@@ -10,16 +10,19 @@ interface MomentSectionProps {
 }
 
 /**
- * Full-bleed on phones. On wider screens the media becomes a full-height portrait
- * column so faces don't get cropped away, with a blurred fill either side.
+ * Full-bleed on phones. On wider screens the media becomes a full-height 9:16 column
+ * so faces don't get cropped away, with a blurred fill either side.
+ *
+ * Centering is done with flex rather than a translate utility — `.reveal` animates
+ * `transform`, and a Tailwind translate class on the same element would override it.
  */
 const columnClass =
-  "absolute inset-0 md:inset-y-0 md:left-1/2 md:h-full md:w-auto md:-translate-x-1/2 md:aspect-[9/16]"
+  "relative h-full w-full overflow-hidden md:w-auto md:aspect-[9/16] md:rounded-[28px] md:shadow-2xl"
 
 const mediaClass = "h-full w-full object-cover"
 
 export function MomentSection({ moment, index }: MomentSectionProps) {
-  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.35 })
+  const { ref, inView } = useInView<HTMLElement>({ threshold: 0.35 })
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // Only fetch and play the video while its section is on screen.
@@ -54,48 +57,50 @@ export function MomentSection({ moment, index }: MomentSectionProps) {
         />
       )}
 
-      <div className={cn(columnClass, "reveal overflow-hidden", inView && "reveal-in")}>
-        {isImage ? (
-          <picture>
-            <source srcSet={moment.webp} type="image/webp" />
-            <img
-              src={moment.jpg}
-              alt={moment.alt ?? ""}
-              width={moment.width}
-              height={moment.height}
-              loading={index === 0 ? "eager" : "lazy"}
-              decoding="async"
+      <div className="absolute inset-0 flex items-center justify-center md:py-8">
+        <div className={cn(columnClass, "reveal", inView && "reveal-in")}>
+          {isImage ? (
+            <picture>
+              <source srcSet={moment.webp} type="image/webp" />
+              <img
+                src={moment.jpg}
+                alt={moment.alt ?? ""}
+                width={moment.width}
+                height={moment.height}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                className={mediaClass}
+              />
+            </picture>
+          ) : (
+            <video
+              ref={videoRef}
+              src={moment.src}
+              loop
+              muted
+              playsInline
+              preload="none"
               className={mediaClass}
             />
-          </picture>
-        ) : (
-          <video
-            ref={videoRef}
-            src={moment.src}
-            loop
-            muted
-            playsInline
-            preload="none"
-            className={mediaClass}
-          />
-        )}
-
-        {/* Scrim so the white message stays readable over any photo. */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-        <p
-          className={cn(
-            "absolute inset-x-0 bottom-0 px-8 pb-16 text-balance text-center text-2xl italic leading-relaxed text-white sm:text-3xl",
-            "reveal-message",
-            inView && "reveal-message-in"
           )}
-          style={{
-            fontFamily: "'Instrument Serif', serif",
-            textShadow: "0 2px 18px rgba(0,0,0,0.6)",
-          }}
-        >
-          {moment.message}
-        </p>
+
+          {/* Scrim so the white message stays readable over any photo. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+
+          <p
+            className={cn(
+              "absolute inset-x-0 bottom-0 px-8 pb-14 text-balance text-center text-2xl italic leading-relaxed text-white sm:text-3xl",
+              "reveal-message",
+              inView && "reveal-message-in"
+            )}
+            style={{
+              fontFamily: "'Instrument Serif', serif",
+              textShadow: "0 2px 18px rgba(0,0,0,0.65)",
+            }}
+          >
+            {moment.message}
+          </p>
+        </div>
       </div>
     </section>
   )

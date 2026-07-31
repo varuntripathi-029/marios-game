@@ -164,6 +164,129 @@
   animation: fade-rise 0.8s ease-out 0.4s both;
 }
 
+/* ---------------------------------- Album ---------------------------------------- */
+
+.album-stage {
+  perspective: 2400px;
+  perspective-origin: 50% 45%;
+  /* Sized so a two-page spread always fits the viewport, on a phone or a desktop. */
+  --page-w: min(46vw, 380px, 47svh);
+  --page-h: calc(var(--page-w) / 0.66);
+}
+
+.album-book {
+  position: relative;
+  width: calc(var(--page-w) * 2);
+  height: var(--page-h);
+  transform-style: preserve-3d;
+  /* Slides half a page so the shut book, and the finished one, stay centred. */
+  transition: transform 1.25s cubic-bezier(0.3, 1.06, 0.36, 1);
+}
+
+/* The static boards the sheets sit on: inside front cover and inside back cover. */
+.album-board {
+  position: absolute;
+  top: 0;
+  width: var(--page-w);
+  height: 100%;
+  overflow: hidden;
+}
+
+.album-board--left {
+  left: 0;
+  border-radius: 10px 3px 3px 10px;
+}
+
+.album-board--right {
+  left: 50%;
+  border-radius: 3px 10px 10px 3px;
+}
+
+.album-sheet {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--page-w);
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  /* Slow, weighty page turn with a touch of overshoot as it settles. */
+  transition: transform 1.25s cubic-bezier(0.3, 1.06, 0.36, 1);
+}
+
+.album-sheet.is-flipped {
+  transform: rotateY(-180deg);
+}
+
+.album-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Right-hand page: rounded on the outer edge, shaded towards the spine. */
+.album-face--front {
+  border-radius: 3px 10px 10px 3px;
+  box-shadow:
+    inset 10px 0 22px -14px rgba(60, 20, 35, 0.5),
+    0 18px 45px -20px rgba(80, 20, 45, 0.45);
+}
+
+/* Left-hand page: the mirror of the above. */
+.album-face--back {
+  transform: rotateY(180deg);
+  border-radius: 10px 3px 3px 10px;
+  box-shadow:
+    inset -10px 0 22px -14px rgba(60, 20, 35, 0.5),
+    0 18px 45px -20px rgba(80, 20, 45, 0.45);
+}
+
+.album-paper {
+  background:
+    radial-gradient(120% 90% at 50% 0%, #fffdfb 0%, #fdf5ef 55%, #f7ebe4 100%);
+}
+
+.album-cover {
+  background:
+    radial-gradient(120% 100% at 30% 15%, #a52449 0%, #7d1739 55%, #5d0f2a 100%);
+  color: #fff6f2;
+}
+
+/* Faint crease down the middle of the spread. */
+.album-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 26px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(90, 30, 50, 0) 0%,
+    rgba(90, 30, 50, 0.18) 45%,
+    rgba(90, 30, 50, 0.22) 50%,
+    rgba(90, 30, 50, 0.18) 55%,
+    rgba(90, 30, 50, 0) 100%
+  );
+}
+
+/* Each page's line pops up from below once the page has settled. */
+.album-message {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s ease-out 0.55s,
+    transform 0.9s cubic-bezier(0.2, 1.4, 0.4, 1) 0.55s;
+}
+
+.album-message.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ------------------------------- Spring reveals ---------------------------------- */
 
 /* Slow, soft overshoot — settles rather than snaps. */

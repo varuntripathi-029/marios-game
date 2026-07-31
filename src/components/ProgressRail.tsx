@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils"
 /**
  * Little dots down the right edge showing where you are in the story.
  *
- * `mix-blend-difference` means one set of dots reads correctly over both the dark
- * photos and the blush background, with no per-section theming.
+ * White with a dark ring so one set of dots reads over both the photos and the blush
+ * background. This used to use `mix-blend-difference`, which looked the part but forces
+ * the browser to re-blend everything underneath a fixed element on every scroll frame.
  */
 export function ProgressRail({ ids }: { ids: string[] }) {
   const [active, setActive] = useState(0)
@@ -39,7 +40,7 @@ export function ProgressRail({ ids }: { ids: string[] }) {
   return (
     <nav
       aria-label="Story progress"
-      className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-2.5 mix-blend-difference sm:flex"
+      className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-2.5 sm:flex"
     >
       {ids.map((id, index) => (
         <button
@@ -51,8 +52,8 @@ export function ProgressRail({ ids }: { ids: string[] }) {
             document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
           }
           className={cn(
-            "w-1.5 rounded-full bg-white transition-all duration-500 ease-out",
-            index === active ? "h-7 opacity-95" : "h-1.5 opacity-45 hover:opacity-75"
+            "w-1.5 rounded-full bg-white shadow-[0_0_0_1px_rgba(90,25,50,0.35)] transition-all duration-500 ease-out",
+            index === active ? "h-7 opacity-100" : "h-1.5 opacity-60 hover:opacity-85"
           )}
         />
       ))}

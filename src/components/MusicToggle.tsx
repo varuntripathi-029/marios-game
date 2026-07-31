@@ -11,23 +11,23 @@ export function MusicToggle() {
   const [available, setAvailable] = useState(true)
   const [playing, setPlaying] = useState(false)
 
-  // Browsers refuse to play audio until the visitor has interacted with the page, so
-  // the first tap, click or key press anywhere is what actually gets it going.
+  // Deliberately no page-wide listener: the button is the only thing that starts or
+  // stops the track. A window-level pointerdown handler also fires when the button
+  // itself is pressed, so it began playing and the button's own click then paused it —
+  // the first press cancelled itself, and taps anywhere else started the music.
+  // Keep playing state in step with the element in case the browser stops it for us.
   useEffect(() => {
-    const start = () => {
-      const audio = audioRef.current
-      if (!audio || !audio.paused) return
-      void audio
-        .play()
-        .then(() => setPlaying(true))
-        .catch(() => undefined)
-    }
+    const audio = audioRef.current
+    if (!audio) return
 
-    window.addEventListener("pointerdown", start, { once: true })
-    window.addEventListener("keydown", start, { once: true })
+    const onPlay = () => setPlaying(true)
+    const onPause = () => setPlaying(false)
+
+    audio.addEventListener("play", onPlay)
+    audio.addEventListener("pause", onPause)
     return () => {
-      window.removeEventListener("pointerdown", start)
-      window.removeEventListener("keydown", start)
+      audio.removeEventListener("play", onPlay)
+      audio.removeEventListener("pause", onPause)
     }
   }, [])
 
@@ -64,7 +64,7 @@ export function MusicToggle() {
         type="button"
         onClick={toggle}
         aria-label={playing ? "Pause the music" : "Play the music"}
-        className="love-glass fixed right-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform duration-300 hover:scale-[1.08] active:scale-95"
+        className="love-solid fixed right-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-full transition-transform duration-300 hover:scale-[1.08] active:scale-95"
       >
         {playing ? (
           <Pause className="h-4 w-4" />

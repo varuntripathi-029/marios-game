@@ -46,9 +46,13 @@
   }
 
   html {
-    scroll-behavior: smooth;
     /* Each section grabs the viewport as you scroll into it. */
     scroll-snap-type: y mandatory;
+    /*
+     * Deliberately NOT `scroll-behavior: smooth`. Combined with mandatory snapping the
+     * two animations fight each other and the whole page feels laggy and drifty.
+     * The progress rail asks for smooth scrolling explicitly where it wants it.
+     */
   }
 
   body {
@@ -128,6 +132,19 @@
   pointer-events: none;
 }
 
+/*
+ * For fixed controls that sit over scrolling content. No backdrop-filter: blurring the
+ * backdrop of a fixed element has to be redone every single scroll frame, which is one
+ * of the cheapest ways to make a page feel sticky.
+ */
+.love-solid {
+  background: rgba(255, 255, 255, 0.85);
+  color: hsl(var(--ink));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    0 8px 24px -10px rgba(214, 51, 108, 0.5);
+}
+
 /* Same shine, but legible against the blush background. */
 .love-glass {
   background: rgba(255, 255, 255, 0.55);
@@ -204,11 +221,13 @@
 .album-board--left {
   left: 0;
   border-radius: 10px 3px 3px 10px;
+  box-shadow: -14px 18px 45px -22px rgba(80, 20, 45, 0.5);
 }
 
 .album-board--right {
   left: 50%;
   border-radius: 3px 10px 10px 3px;
+  box-shadow: 14px 18px 45px -22px rgba(80, 20, 45, 0.5);
 }
 
 .album-sheet {
@@ -220,7 +239,10 @@
   transform-origin: left center;
   transform-style: preserve-3d;
   /* Slow, weighty page turn with a touch of overshoot as it settles. */
-  transition: transform 1.25s cubic-bezier(0.3, 1.06, 0.36, 1);
+  transition: transform 1.15s cubic-bezier(0.3, 1.06, 0.36, 1);
+  /* Only four sheets, so promoting them is cheap and keeps the turn off the main
+     thread instead of re-rasterising a full-page photo every frame. */
+  will-change: transform;
 }
 
 .album-sheet.is-flipped {
@@ -235,21 +257,21 @@
   -webkit-backface-visibility: hidden;
 }
 
-/* Right-hand page: rounded on the outer edge, shaded towards the spine. */
+/*
+ * Only the cheap inset shading towards the spine lives on the turning faces. The wide
+ * outer drop shadow sits on the static boards below instead — a large blurred shadow
+ * on a rotating element is recomputed every frame of the turn.
+ */
 .album-face--front {
   border-radius: 3px 10px 10px 3px;
-  box-shadow:
-    inset 10px 0 22px -14px rgba(60, 20, 35, 0.5),
-    0 18px 45px -20px rgba(80, 20, 45, 0.45);
+  box-shadow: inset 10px 0 22px -14px rgba(60, 20, 35, 0.5);
 }
 
 /* Left-hand page: the mirror of the above. */
 .album-face--back {
   transform: rotateY(180deg);
   border-radius: 10px 3px 3px 10px;
-  box-shadow:
-    inset -10px 0 22px -14px rgba(60, 20, 35, 0.5),
-    0 18px 45px -20px rgba(80, 20, 45, 0.45);
+  box-shadow: inset -10px 0 22px -14px rgba(60, 20, 35, 0.5);
 }
 
 .album-paper {

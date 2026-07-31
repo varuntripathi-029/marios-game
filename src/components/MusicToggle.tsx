@@ -70,6 +70,39 @@ export function MusicToggle() {
           <Music className="h-4 w-4 animate-heartbeat" />
         )}
       </button>
+
+      {/* Points at the button until the track is actually running. */}
+      {!playing && (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label="Play the music"
+          className="hint-appear fixed right-3 top-[4.1rem] z-40 flex flex-col items-end text-white"
+          style={{ filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.55))" }}
+        >
+          <span className="hint-bob flex flex-col items-end">
+            <svg
+              viewBox="0 0 60 60"
+              aria-hidden
+              className="mr-2 h-11 w-11"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M8 56 C 6 30, 20 12, 46 7" />
+              <path d="M34 4 L48 7 L41 19" />
+            </svg>
+            <span
+              className="mt-1 max-w-[8.5rem] text-right text-sm italic leading-snug"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              psst… turn the music on ♪
+            </span>
+          </span>
+        </button>
+      )}
     </>
   )
 }

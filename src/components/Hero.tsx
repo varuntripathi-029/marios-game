@@ -27,7 +27,7 @@ export function Hero() {
           style={serif}
         >
           Happy <em className="not-italic text-muted-foreground">Girlfriend's Day</em>{" "}
-          <em className="not-italic text-muted-foreground">Jumbo 🫂🌻</em>
+          <em className="not-italic text-muted-foreground">Baby 🫂🌻</em>
         </h1>
 
         <p className="animate-fade-rise-delay mt-8 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">

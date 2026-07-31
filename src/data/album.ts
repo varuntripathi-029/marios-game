@@ -16,7 +16,7 @@ export interface AlbumPhoto {
 export const photos: AlbumPhoto[] = [
   { id: "photo-1", webp: "/img1.webp", jpg: "/img1.jpg", width: 900, height: 1600, alt: "A moment together" },
   { id: "photo-2", webp: "/img2.webp", jpg: "/img2.jpg", width: 1200, height: 1600, alt: "A moment together" },
-  { id: "photo-3", webp: "/img3.webp", jpg: "/img3.jpg", width: 810, height: 1800, alt: "A moment together" },
+  { id: "photo-3", webp: "/img3.webp", jpg: "/img3.jpg", width: 1200, height: 1800, alt: "A moment together" },
   { id: "photo-4", webp: "/img4.webp", jpg: "/img4.jpg", width: 720, height: 1280, alt: "A moment together" },
   { id: "photo-5", webp: "/img5.webp", jpg: "/img5.jpg", width: 720, height: 1280, alt: "A moment together" },
   { id: "photo-6", webp: "/img6.webp", jpg: "/img6.jpg", width: 899, height: 1599, alt: "A moment together" },

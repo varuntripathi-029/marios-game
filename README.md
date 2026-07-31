@@ -18,23 +18,38 @@ npm run dev      # http://localhost:5173
 | `npm run build` | Typecheck, then build to `dist/` |
 | `npm run preview` | Serve the production build at http://localhost:4173 |
 
-## Editing the messages
+## Editing the words
 
-Everything you'd want to change lives in **`src/data/moments.ts`** — one entry per
-full-screen section, in scroll order. Edit the `message` strings; the page hot-reloads.
+Everything you'd want to change lives in **`src/data/album.ts`** — the front cover line,
+the back cover line, and the poem stanzas. The hero headline and subtext are in
+`src/components/Hero.tsx`; the closing lines are two constants at the top of
+`src/components/Ending.tsx`.
 
-The hero headline and subtext are in `src/components/Hero.tsx`, and the closing button
-is in `src/components/Ending.tsx`.
+## How the album works
 
-## How the scroll story works
+- Six photos are bound into four sheets: the front cover backs onto photo 1, photo 2
+  backs onto photo 3, and so on. Turning the last sheet reveals the back cover with
+  `finalvid.mp4` on the facing page.
+- Each turn is a 3D `rotateY` on a sheet with a front and a back face, eased slowly with
+  a little overshoot. A sticky viewport holds the book still while snap anchors give one
+  turn per scroll step.
+- `sheetDepth()` in `Album.tsx` gives every sheet its own stacking layer. Tied
+  z-indexes fall back to DOM order and let pages bleed through each other mid-turn.
+- One stanza of the poem sits under the album per scroll step, six steps for six
+  stanzas. The album runs out of pages at step 4, so the last two stanzas play out
+  against the finished book.
+- Pages are sized from `--page-w` in `index.css`, clamped against viewport width and
+  height so the spread always fits. Phones get taller pages via `--page-ratio`, since
+  they have height to spare but no width.
+- Respects `prefers-reduced-motion`: snapping, springs, and the heart rain all turn off.
 
-- `scroll-snap-type: y mandatory` plus `scroll-snap-stop: always` means each section
-  takes the whole viewport — you land on one moment at a time.
-- Reveals use a slow spring easing (`cubic-bezier(0.22, 1.25, 0.32, 1)`, ~1.5s) so media
-  settles into place rather than snapping. The message follows 0.45s behind its photo.
-- Photos are full-bleed on phones. On wider screens they become a full-height 9:16
-  column with a blurred fill either side, so faces never get cropped out.
-- Respects `prefers-reduced-motion`: snapping, springs, and the flower rain all turn off.
+## Music
+
+Drop an audio file at **`public/song.mp3`** and a play/pause button appears at the top
+right. Without that file the button hides itself, so nothing breaks by leaving it out.
+Browsers refuse to play audio until the visitor has interacted with the page, so the
+track starts on her first tap or click anywhere. To use a different filename, change
+`MUSIC_SRC` in `src/components/MusicToggle.tsx`.
 
 ## Deploying to Vercel
 

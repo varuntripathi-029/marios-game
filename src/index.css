@@ -169,9 +169,18 @@
 .album-stage {
   perspective: 2400px;
   perspective-origin: 50% 45%;
-  /* Sized so a two-page spread always fits the viewport, on a phone or a desktop. */
-  --page-w: min(46vw, 380px, 47svh);
-  --page-h: calc(var(--page-w) / 0.66);
+  /* Sized so a two-page spread always fits, leaving room for a stanza underneath. */
+  --page-ratio: 0.66;
+  --page-w: min(47vw, 430px, 42svh);
+  --page-h: calc(var(--page-w) / var(--page-ratio));
+}
+
+/* Phones have height to spare but no width, so the pages grow taller instead. */
+@media (max-width: 767px) {
+  .album-stage {
+    --page-ratio: 0.56;
+    --page-w: min(47vw, 40svh);
+  }
 }
 
 .album-book {
@@ -273,18 +282,24 @@
   );
 }
 
-/* Each page's line pops up from below once the page has settled. */
-.album-message {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.7s ease-out 0.55s,
-    transform 0.9s cubic-bezier(0.2, 1.4, 0.4, 1) 0.55s;
+/*
+ * Each stanza pops up from below once its page has settled. This has to be an
+ * animation rather than a transition: the element is remounted per step, and a
+ * transition never runs on an element that mounts already in its end state.
+ */
+@keyframes stanza-rise {
+  from {
+    opacity: 0;
+    transform: translateY(34px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.album-message.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+.stanza-rise {
+  animation: stanza-rise 1s cubic-bezier(0.2, 1.3, 0.4, 1) 0.5s both;
 }
 
 /* ------------------------------- Spring reveals ---------------------------------- */
@@ -417,7 +432,8 @@
   .animate-fade-rise-delay-2,
   .animate-heartbeat,
   .ambient-heart,
-  .heart-petal {
+  .heart-petal,
+  .stanza-rise {
     animation: none;
   }
 

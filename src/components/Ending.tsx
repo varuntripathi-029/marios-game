@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils"
 const serif = { fontFamily: "'Instrument Serif', serif" }
 
 /** ── Edit these two lines to change the closing words. ── */
-const HEADLINE = "And that's just the beginning."
-const SUBLINE = "Every photo up there is a day I'd live again."
+const HEADLINE = "that's all i could do (～￣▽￣)～"
+const SUBLINE = "Be my, be my baby..!!"
 
 export function Ending() {
   const [bursts, setBursts] = useState(0)

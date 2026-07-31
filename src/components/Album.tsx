@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 
 import { AmbientHearts } from "@/components/AmbientHearts"
-import { cover, finale, photos, type AlbumPhoto } from "@/data/album"
+import { backCover, cover, finale, photos, stanzas, type AlbumPhoto } from "@/data/album"
 import { cn } from "@/lib/utils"
 
 const serif = { fontFamily: "'Instrument Serif', serif" }
@@ -28,8 +28,11 @@ const sheets: Sheet[] = [
   { front: { kind: "photo", photo: photos[5] }, back: { kind: "finale" } },
 ]
 
-/** One step per spread: closed, three spreads, then the back cover. */
-const STEPS = sheets.length + 1
+/** One scroll step per stanza, so the poem paces the page turns. */
+const STEPS = stanzas.length
+
+/** The album runs out of pages before the poem runs out of stanzas. */
+const LAST_TURN = sheets.length
 
 export const ALBUM_STEP_IDS = Array.from({ length: STEPS }, (_, i) => `album-${i}`)
 
@@ -37,20 +40,20 @@ export const ALBUM_STEP_IDS = Array.from({ length: STEPS }, (_, i) => `album-${i
  * Stacking order for a sheet. Every sheet must land on its own layer — ties fall back
  * to DOM order, which lets pages bleed through each other part-way through a turn.
  *
- * The sheet at the current step sits on top of everything, so it stays visible whether
+ * The sheet at the current turn sits on top of everything, so it stays visible whether
  * it is turning forwards or back. Below that, turned sheets stack upwards on the left
  * (most recently turned on top) and untouched sheets stack downwards on the right.
  */
-function sheetDepth(index: number, step: number): number {
+function sheetDepth(index: number, turn: number): number {
   const count = sheets.length
-  if (index === step) return count * 2 + 1
-  return index < step ? count + index + 1 : count - index
+  if (index === turn) return count * 2 + 1
+  return index < turn ? count + index + 1 : count - index
 }
 
-function PhotoFace({ photo, active }: { photo: AlbumPhoto; active: boolean }) {
+function PhotoFace({ photo }: { photo: AlbumPhoto }) {
   return (
-    <div className="album-paper flex h-full w-full flex-col p-[6%]">
-      <div className="min-h-0 flex-1 overflow-hidden rounded-[3px] bg-black/[0.06] shadow-[0_2px_10px_-4px_rgba(60,20,35,0.5)]">
+    <div className="album-paper h-full w-full p-[4%]">
+      <div className="h-full w-full overflow-hidden rounded-[3px] bg-black/[0.06] shadow-[0_2px_10px_-4px_rgba(60,20,35,0.5)]">
         <picture>
           <source srcSet={photo.webp} type="image/webp" />
           <img
@@ -64,16 +67,6 @@ function PhotoFace({ photo, active }: { photo: AlbumPhoto; active: boolean }) {
           />
         </picture>
       </div>
-
-      <p
-        className={cn(
-          "album-message mt-[6%] text-center italic leading-snug text-ink",
-          active && "is-visible"
-        )}
-        style={{ ...serif, fontSize: "calc(var(--page-w) * 0.072)" }}
-      >
-        {photo.message}
-      </p>
     </div>
   )
 }
@@ -92,8 +85,8 @@ function FinaleFace({ active }: { active: boolean }) {
   }, [active])
 
   return (
-    <div className="album-paper flex h-full w-full flex-col p-[6%]">
-      <div className="min-h-0 flex-1 overflow-hidden rounded-[3px] bg-black/[0.06] shadow-[0_2px_10px_-4px_rgba(60,20,35,0.5)]">
+    <div className="album-paper h-full w-full p-[4%]">
+      <div className="h-full w-full overflow-hidden rounded-[3px] bg-black/[0.06] shadow-[0_2px_10px_-4px_rgba(60,20,35,0.5)]">
         <video
           ref={videoRef}
           src={finale.src}
@@ -105,36 +98,23 @@ function FinaleFace({ active }: { active: boolean }) {
           className="h-full w-full object-cover"
         />
       </div>
-
-      <p
-        className={cn(
-          "album-message mt-[6%] text-center italic leading-snug text-ink",
-          active && "is-visible"
-        )}
-        style={{ ...serif, fontSize: "calc(var(--page-w) * 0.072)" }}
-      >
-        {finale.message}
-      </p>
     </div>
   )
 }
 
-function CoverFace() {
+function CoverFace({ line, big }: { line: string; big: boolean }) {
   return (
-    <div className="album-cover flex h-full w-full flex-col items-center justify-center p-[10%] text-center">
-      <div className="flex h-full w-full flex-col items-center justify-center rounded-[4px] border border-white/25 px-[8%]">
-        <span style={{ fontSize: "calc(var(--page-w) * 0.14)" }}>❤️</span>
-        <h2
-          className="mt-[6%] leading-none"
-          style={{ ...serif, fontSize: "calc(var(--page-w) * 0.2)" }}
-        >
-          {cover.title}
-        </h2>
+    <div className="album-cover h-full w-full p-[8%]">
+      <div className="flex h-full w-full flex-col items-center justify-center rounded-[4px] border border-white/25 px-[10%] text-center">
+        <span style={{ fontSize: "calc(var(--page-w) * 0.13)" }}>❤️</span>
         <p
-          className="mt-[8%] italic opacity-80"
-          style={{ ...serif, fontSize: "calc(var(--page-w) * 0.072)" }}
+          className="mt-[8%] italic leading-snug"
+          style={{
+            ...serif,
+            fontSize: `calc(var(--page-w) * ${big ? 0.095 : 0.058})`,
+          }}
         >
-          {cover.subtitle}
+          {line}
         </p>
       </div>
     </div>
@@ -142,16 +122,31 @@ function CoverFace() {
 }
 
 function FaceContent({ face, active }: { face: Face; active: boolean }) {
-  if (face.kind === "cover") return <CoverFace />
+  if (face.kind === "cover") return <CoverFace line={cover.line} big />
   if (face.kind === "finale") return <FinaleFace active={active} />
-  return <PhotoFace photo={face.photo} active={active} />
+  return <PhotoFace photo={face.photo} />
+}
+
+function Stanza({ lines }: { lines: string[] }) {
+  return (
+    <p
+      className="stanza-rise text-center italic leading-relaxed text-ink"
+      style={{ ...serif, fontSize: "clamp(0.95rem, 1.9vw, 1.5rem)" }}
+    >
+      {lines.map((line, i) => (
+        <span key={i} className="block">
+          {line}
+        </span>
+      ))}
+    </p>
+  )
 }
 
 export function Album() {
   const sectionRef = useRef<HTMLElement>(null)
   const [step, setStep] = useState(0)
 
-  // Scroll position inside the tall section decides how many sheets have turned.
+  // Scroll position inside the tall section decides how far through the poem we are.
   useEffect(() => {
     let frame = 0
 
@@ -179,8 +174,9 @@ export function Album() {
     }
   }, [])
 
-  const closed = step === 0
-  const ended = step === STEPS - 1
+  // The last stanzas play out against the finished album rather than more turns.
+  const turn = Math.min(step, LAST_TURN)
+  const closed = turn === 0
 
   return (
     <section
@@ -189,7 +185,7 @@ export function Album() {
       className="relative w-full"
       style={{ height: `calc(${STEPS} * 100svh)` }}
     >
-      <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-[100svh] w-full flex-col items-center justify-center gap-[3svh] overflow-hidden">
         <AmbientHearts count={12} />
 
         <div className="album-stage relative z-10">
@@ -197,7 +193,7 @@ export function Album() {
             className="album-book"
             style={{
               // Shut, only the right half carries the cover, so nudge it to the middle.
-              // Once finished both halves are in use again, so it sits centred.
+              // Once opened both halves are in use, so it sits centred.
               transform: closed ? "translateX(calc(var(--page-w) / -2))" : "none",
             }}
           >
@@ -208,32 +204,39 @@ export function Album() {
             />
 
             {/* Back cover, revealed once every sheet has turned. */}
-            <div className="album-board album-board--right album-cover" />
+            <div className="album-board album-board--right">
+              <CoverFace line={backCover.line} big={false} />
+            </div>
 
             {sheets.map((sheet, index) => {
-              const flipped = index < step
+              const flipped = index < turn
               return (
                 <div
                   key={index}
                   className={cn("album-sheet", flipped && "is-flipped")}
-                  style={{ zIndex: sheetDepth(index, step) }}
+                  style={{ zIndex: sheetDepth(index, turn) }}
                 >
                   <div className="album-face album-face--front">
-                    <FaceContent face={sheet.front} active={index === step} />
+                    <FaceContent face={sheet.front} active={index === turn} />
                   </div>
                   <div className="album-face album-face--back">
-                    <FaceContent face={sheet.back} active={index === step - 1} />
+                    <FaceContent face={sheet.back} active={index === turn - 1} />
                   </div>
                 </div>
               )
             })}
 
-            {!closed && !ended && <div className="album-spine" />}
+            {!closed && <div className="album-spine" />}
           </div>
+        </div>
+
+        {/* One stanza per step. Keyed by step so it replays its entrance each time. */}
+        <div className="relative z-10 flex h-[25svh] w-full max-w-2xl items-start justify-center px-6">
+          <Stanza key={step} lines={stanzas[Math.min(step, stanzas.length - 1)]} />
         </div>
       </div>
 
-      {/* Snap anchors — one viewport of scrolling per page turn. */}
+      {/* Snap anchors — one viewport of scrolling per stanza. */}
       {ALBUM_STEP_IDS.map((id, index) => (
         <div
           key={id}

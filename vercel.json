@@ -6,7 +6,7 @@
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {
-      "source": "/(.*)\\.(mp4|webp|jpg|jpeg|png|svg)",
+      "source": "/(.*)\\.(mp4|mp3|webp|jpg|jpeg|png|svg)",
       "headers": [
         {
           "key": "Cache-Control",

@@ -71,6 +71,29 @@
   }
 }
 
+/* ---------------------------------- Hero video ----------------------------------- */
+
+/*
+ * landingvid.mp4 is encoded 480x848 with no rotation flag, so the browser paints it
+ * sideways. Rotating 90deg puts it upright; the width/height are swapped first so the
+ * element's *rotated* bounding box comes out exactly viewport-sized, then object-fit
+ * covers whatever is left over.
+ *
+ * If it lands upside down, change `rotate(90deg)` to `rotate(-90deg)`.
+ */
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vh;
+  height: 100vw;
+  width: 100svh;
+  height: 100svw;
+  object-fit: cover;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
 /* ---------------------------------- Liquid glass --------------------------------- */
 
 .liquid-glass {

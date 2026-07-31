@@ -10,7 +10,7 @@ export function Hero() {
       style={{ scrollSnapStop: "always" }}
     >
       <video
-        className="absolute inset-0 z-0 h-full w-full object-cover"
+        className="hero-video z-0"
         src="/landingvid.mp4"
         autoPlay
         loop

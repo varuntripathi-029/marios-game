@@ -59,8 +59,14 @@ Source files live in `assets/`. The versions actually served are in `public/`:
 
 - Photos were resized to max 1800px tall and exported as `.webp` (served first) with
   `.jpg` fallbacks — 2.5 MB of originals down to ~450 KB of WebP.
-- `landingvid.mp4` (0.9 MB, 480×848) is the hero background; `finalvid.mp4` (4.9 MB) is
-  the last moment and uses `preload="none"`, so it only downloads once you scroll to it.
+- `landingvid.mp4` (0.9 MB) is the hero background. It is encoded 480×848 with no
+  rotation flag, so the browser paints it sideways — the `.hero-video` rule in
+  `src/index.css` rotates it 90° and swaps its width/height so the rotated box fills the
+  viewport exactly. Flip `rotate(90deg)` to `rotate(-90deg)` if it ever lands upside
+  down.
+- `finalvid.mp4` (4.9 MB, 1080×1920 after its rotation matrix) is the last moment. It
+  stays portrait, fills the screen with `object-fit: cover`, and uses `preload="none"`
+  so it only downloads once you scroll to it.
 
 If you replace a photo, resize it the same way, drop both formats in `public/`, and
 update the entry in `src/data/moments.ts`.

@@ -79,7 +79,7 @@
  * element's *rotated* bounding box comes out exactly viewport-sized, then object-fit
  * covers whatever is left over.
  *
- * If it lands upside down, change `rotate(90deg)` to `rotate(-90deg)`.
+ * Flip between `rotate(90deg)` and `rotate(-90deg)` to turn it the other way up.
  */
 .hero-video {
   position: absolute;
@@ -90,7 +90,7 @@
   width: 100svh;
   height: 100svw;
   object-fit: cover;
-  transform: translate(-50%, -50%) rotate(90deg);
+  transform: translate(-50%, -50%) rotate(-90deg);
   transform-origin: center center;
 }
 
@@ -196,9 +196,9 @@
   transform: translateY(0) scale(1);
 }
 
-/* ------------------------------- Flower rain ------------------------------------- */
+/* -------------------------------- Heart rain ------------------------------------- */
 
-@keyframes flower-fall {
+@keyframes heart-fall {
   0% {
     opacity: 0;
     transform: translate3d(0, -12vh, 0) rotate(0deg);
@@ -215,12 +215,65 @@
   }
 }
 
-.flower-petal {
+.heart-petal {
   position: fixed;
   top: 0;
   will-change: transform, opacity;
-  animation: flower-fall linear both;
+  animation: heart-fall linear both;
   user-select: none;
+}
+
+/* ------------------------------ Ambient hearts ----------------------------------- */
+
+/* Slow drift upward — decoration for the sections where the blush shows through. */
+@keyframes heart-drift {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10vh, 0) scale(0.7) rotate(0deg);
+  }
+  15% {
+    opacity: var(--peak, 0.5);
+  }
+  85% {
+    opacity: var(--peak, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift, 0px), -85vh, 0) scale(1) rotate(var(--spin, 20deg));
+  }
+}
+
+.ambient-heart {
+  position: absolute;
+  bottom: -10vh;
+  will-change: transform, opacity;
+  animation: heart-drift ease-in-out infinite;
+  user-select: none;
+}
+
+/* --------------------------------- Beating ---------------------------------------- */
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.16);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.12);
+  }
+  56% {
+    transform: scale(1);
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 2.4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -239,7 +292,13 @@
   .animate-fade-rise,
   .animate-fade-rise-delay,
   .animate-fade-rise-delay-2,
-  .flower-petal {
+  .animate-heartbeat,
+  .ambient-heart,
+  .heart-petal {
     animation: none;
+  }
+
+  .ambient-heart {
+    display: none;
   }
 }

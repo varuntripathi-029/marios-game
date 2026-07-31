@@ -79,6 +79,16 @@ export const moments: StoryMoment[] = [
     message: "Your message for the fifth photo goes here.",
   },
   {
+    id: "moment-6",
+    type: "image",
+    webp: "/img6.webp",
+    jpg: "/img6.jpg",
+    width: 899,
+    height: 1599,
+    alt: "A moment together",
+    message: "Your message for the sixth photo goes here.",
+  },
+  {
     id: "moment-final",
     type: "video",
     src: "/finalvid.mp4",

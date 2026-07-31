@@ -1,7 +1,10 @@
 import { Ending } from "@/components/Ending"
 import { Hero } from "@/components/Hero"
 import { MomentSection } from "@/components/MomentSection"
+import { ProgressRail } from "@/components/ProgressRail"
 import { moments } from "@/data/moments"
+
+const sectionIds = ["home", ...moments.map((m) => m.id), "ending"]
 
 export default function App() {
   return (
@@ -13,6 +16,8 @@ export default function App() {
       ))}
 
       <Ending />
+
+      <ProgressRail ids={sectionIds} />
     </main>
   )
 }
